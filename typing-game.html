@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>タイピング</title>
+    <title>ITyping</title>
     <style>
     /*
     html5doctor.com Reset Stylesheet
@@ -159,6 +159,12 @@
     box-shadow: 0 2px 0 #121212;
     }
 
+    .timer {
+    font-size: 7rem;
+    color: white;
+    margin: 80px;
+    }
+
     .replay-button {
     font-family: 'Itim', cursive;
     font-size: 2rem;
@@ -172,7 +178,7 @@
     border: #121212;
     -webkit-box-shadow: 0 5px 0 #121212;
     box-shadow: 0 5px 0 #121212;
-    margin: 10px;
+    margin: 100px;
     }
 
     .replay-button:hover {
@@ -196,18 +202,14 @@
     border: transparent;
     outline: transparent;
     }
-    .message {
-    display: block;
-    margin-top: 2rem;
-    font-size: 5rem;
-    text-align: center;
-    color: white;
+
+    .end-sentence {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     }
-    .button {
-    margin-top: 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    }
+
     .hidden {
     display: none;
     }
@@ -259,13 +261,13 @@
                 <span id="entered" class="marker"></span>
                 <span id="remained" class="premarker"></span>
             </div>
-            <input type="text" class="text" id="inputText" autofocus autocomplete="off">
+            <input type="text" class="text" id="inputText" autofocus autocomplete="off" pattern="[a-zA-Z0-9]*">
         </label>
     </div>
 
     <div id="message" class="text-container hidden">
-        <div class="message">
-            お疲れ様でした！<br>
+        <div class="end-sentence">
+            <div id="time" class="timer"></div>
             <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
@@ -287,7 +289,54 @@
     "protocol","Python","query",
     "RAM","resolution",
     "router","runtime",
-    "scriptinglanguage"
+    "scriptinglanguage","Ajax", "algorithmic", "applet", "argument", "array", "ASP.NET", "assembler", 
+    "asynchronous", "authentication", "backdoor", "bandpass", "baseband", 
+    "benchmarking", "BIOS", "bitrate", "blockchain", "Bluetooth",
+    "bookmark", "booting", "botnet", "breadcrumb", "broadband",
+    "buffer", "bugfix", "busbar", "bytecode",
+    "C++", "callback", "CAPTCHA",
+    "chipset","CLI","client-server","clipboard",
+    "COBOL","codec","commandline","comment","compiler",
+    "computing","concatenation","conditional","configuration",
+    "connectivity","constructor","container",
+    "CORS","crawling","cryptography",
+    "CSS","CSV","cybersecurity",
+    "daemon","dataflow","datagram",
+    "debugger","decryption","defragmentation",
+    "dequeue","dereference","DHCP","daemon","dataflow","datagram",
+    "debugger","decryption","defragmentation","dequeue","dereference","DHCP","dialup","digital","diode",
+    "directx","disassembler","DLL","DNSSEC","doctype",
+    "DOM","dotnet","download","drag-and-drop",
+    "DSL","DTD","dualboot",
+    "Eclipse","ECMAScript","edgecomputing",
+    "EEPROM","EIGRP","Elasticsearch",
+    "embed","emoji","emulator",
+    "encryptionkey","endpoint",
+    "EntityFramework",
+    "EPROM","Ethernet",
+    "eventhandler",
+    "exceptionhandling",
+    "executable",
+    "Express.js",
+    "extranet",
+    "failover",
+    "favicon",
+    "FDDI",
+    "fetchAPI",
+    "FiberOptic","FIFO", "fileserver", "firewire", "firmware", "flash", "flavor", "floatingpoint",
+    "flowchart", "flush", "font", "formfactor", "framework", "frontend",
+    "fullstack", "functionality", "gaming", "gateway", 
+    "GCC", "GIF", "git", "glitch", 
+    "globbing", "Golang","gradient","graphicscard","grid", "gzip", "hackathon", "handle", "hashing", "haskell", 
+    "header", "heap", "hexadecimal", "hierarchy", "hosting", 
+    "HTML5", "HTTP2", "HTTPS", "hyperthreading", 
+    "IDE", "iframe", "IMAP", "immutable","inheritance", "input", "instance", "integer", "interface", 
+    "interpreter", "IoT", "iteration", "JavaFX", 
+    "JDK", "JIT", "join", "JSON", 
+    "JVM", "keyframe", "keyword","lambda", "LAN", "laptop", "latency", "layer", 
+    "LDAP", "library", "linker", "Linux", 
+    "list", "localhost", "lock", "logarithm", 
+    "login", "loop", "machinelearning",
 ];
 
     const entered = document.getElementById('entered');
@@ -298,6 +347,7 @@
     const replayBtn = document.getElementById('replayBtn');
     const startBtn = document.getElementById('startBtn');
     const startPage = document.getElementById('startPage');
+    const timeElement = document.getElementById('time');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
@@ -310,10 +360,9 @@
         game.classList.remove('hidden');
         startPage.classList.add('hidden');
         inputText.focus();
-    });
      
     //配列questionからランダムで10個配列sentencesに代入
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 1; i++){
         let index = Math.floor(Math.random() * questions.length);
         sentences.push(questions[index]);
         questions.splice(index, 1);
@@ -342,7 +391,12 @@
     };
     setQuestion();
 
+        //カウントスタート
+        let startTime = performance.now();
+
+    //入力された文字の正誤判定とその後の処理
     document.addEventListener('input', (e) => {
+
             //大文字小文字の識別なし
         if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
 
@@ -360,11 +414,17 @@
                 if(sentences.length <= 0){
                     game.classList.add('hidden'); // ゲーム画面を非表示
                     message.classList.remove('hidden'); // 終了メッセージ表示
+                    let endTime = performance.now();
+                    let elapsedTime = endTime - startTime;
+                    let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
+                    console.log(`${elapsedTimeInSeconds.toFixed(2)}`)
+                    timeElement.textContent = `your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
                 }else{
                     setQuestion(); // 新しい問題文をセット
                 }
             }
         }
+    });
     });
 
     // メニューに戻るボタン
