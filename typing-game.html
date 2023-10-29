@@ -99,9 +99,10 @@
     /* Reset CSS ここまで */
 
     body {
-        font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+        font-family: 'Itim', cursive;
         overflow: hidden;
     }
+
     .text-container {
         width: 100vw;
         height: 100vh;
@@ -111,6 +112,7 @@
         align-items: center;
         background-color: rgb(30, 30, 30);
     }
+
     .text-container label {
         width: 100%;
         height: 100%;
@@ -121,50 +123,103 @@
     }
 
     .marker {
-        color: greenyellow;
+        color: yellow;
     }
 
-    .premaker {
+    .premarker {
         color: white;
+    }
+
+    .game-title {
+        font-size: 15rem;
+        color: #fff;
+        margin: 100px;
+    }
+
+    .start-button {
+    font-family: 'Itim', cursive;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #32323232;
+    border-radius: 50%;
+    line-height: 80px;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: #121212;
+    -webkit-box-shadow: 0 5px 0 #121212;
+    box-shadow: 0 5px 0 #121212;
+    margin: 10px;
+    }
+
+    .start-button:hover {
+    -webkit-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+    -webkit-box-shadow: 0 2px 0 #121212;
+    box-shadow: 0 2px 0 #121212;
+    }
+
+    .replay-button {
+    font-family: 'Itim', cursive;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #32323232;
+    border-radius: 50%;
+    line-height: 80px;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: #121212;
+    -webkit-box-shadow: 0 5px 0 #121212;
+    box-shadow: 0 5px 0 #121212;
+    margin: 10px;
+    }
+
+    .replay-button:hover {
+    -webkit-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+    -webkit-box-shadow: 0 2px 0 #121212;
+    box-shadow: 0 2px 0 #121212;
     }
 
     .text {
-        width: 100%;
-        border: none;
-        margin-top: 2rem;
-        font-size: 2vw;
-        letter-spacing: 0.1em;
-        text-align: center;
-        color: transparent;
-        background-color: rgb(30, 30, 30);
+    width: 100%;
+    border: none;
+    margin-top: 2rem;
+    font-size: 2vw;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: transparent;
+    background-color: transparent;
     }
     .text:focus, .text:focus-visible {
-        border: none;
-        outline: none;
+    border: transparent;
+    outline: transparent;
     }
     .message {
-        display: block;
-        margin-top: 2rem;
-        font-size: 5rem;
-        text-align: center;
-        color: white;
+    display: block;
+    margin-top: 2rem;
+    font-size: 5rem;
+    text-align: center;
+    color: white;
     }
     .button {
-        margin-top: 1rem;
-        font-size: 1rem;
-        cursor: pointer;
+    margin-top: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
     }
     .hidden {
-        display: none;
+    display: none;
     }
 
     .question {
+    display:inline-flex;
     position: relative;
     margin: 2em auto;
     font-weight: bold;
     font-size: 5vw;
     letter-spacing: 0.1em;
-    padding: 1em;
+    padding: 1.7em;
     width: 60%; /* ボックス幅 */
     background: #006633; /* ボックス背景色 */
     color: #fff; /* 文章色 */
@@ -179,14 +234,14 @@
     bottom: 0;
     } 
     .question::before {
-    width: 20px; 
-    right: 10px;
+    width: 30px; 
+    right: 30px;
     border: solid 3px #ffff00; /*チョーク（黄色）*/
-    border-radius: 3px 2px 0 2px;
+    border-radius: 5px 2px 0 2px;
     }
     .question::after {
-    width: 15px; 
-    right: 45px;
+    width: 35px; 
+    right: 90px;
     border: solid 3px #fff; /*チョーク（白） */
     border-radius: 8px 5px 2px 5px;
     }
@@ -194,20 +249,24 @@
     </style>
 </head>
 <body>
-    <div id="game" class="text-container">
+    <div id="startPage" class="text-container">
+        <h1 class="game-title">ITyping</h1>
+        <button id="startBtn" class="start-button">start</button>
+    </div>
+    <div id="game" class="text-container hidden">
         <label for="inputText">
             <div class="question">
                 <span id="entered" class="marker"></span>
-                <span id="remained" class="premaker"></span>
+                <span id="remained" class="premarker"></span>
             </div>
-            <input type="text" class="text" id="inputText" autofocus>
+            <input type="text" class="text" id="inputText" autofocus autocomplete="off">
         </label>
     </div>
 
     <div id="message" class="text-container hidden">
         <div class="message">
-            ゲームクリア！お疲れ様でした！<br>
-            <button id="replayBtn" class="button">もう一度プレイする</button>
+            お疲れ様でした！<br>
+            <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
 
@@ -228,28 +287,7 @@
     "protocol","Python","query",
     "RAM","resolution",
     "router","runtime",
-    "scriptinglanguage",
-    "searchengine",
-    "security",
-    "server",
-    "software",
-    "spam",
-    "spreadsheet",
-    "SQL",
-    "storage",
-    "syntax",
-    'TCP/IP',
-    'terminal',
-    'thread',
-    'URL',
-    'userinterface',
-    'username',
-    'virtualreality',
-    'virus',
-    'webbrowser',
-    'webpage',
-    'website',
-    'WiFi',
+    "scriptinglanguage"
 ];
 
     const entered = document.getElementById('entered');
@@ -258,21 +296,38 @@
     const game = document.getElementById('game');
     const message = document.getElementById('message');
     const replayBtn = document.getElementById('replayBtn');
+    const startBtn = document.getElementById('startBtn');
+    const startPage = document.getElementById('startPage');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
+    let sentences = [];
     let currentKey;
     let currentText;
+
+    //開始ボタンを押された時の処理
+    startBtn.addEventListener('click', () => {
+        game.classList.remove('hidden');
+        startPage.classList.add('hidden');
+        inputText.focus();
+    });
+     
+    //配列questionからランダムで10個配列sentencesに代入
+    for(let i = 0; i < 10; i++){
+        let index = Math.floor(Math.random() * questions.length);
+        sentences.push(questions[index]);
+        questions.splice(index, 1);
+    };
 
     // 新しい問題文をランダムにセットする関数
     const setQuestion = () => {
 
         // 問題文をランダムで選ぶ
-        currentKey = Math.floor( Math.random() * questions.length );
-        currentText = questions[ currentKey ];
+        currentKey = Math.floor( Math.random() * sentences.length );
+        currentText = sentences[ currentKey ];
 
         // 一度選ばれた問題は配列から削除
-        questions.splice(currentKey, 1);
+        sentences.splice(currentKey, 1);
 
         // 画面に新しい問題文をセット
         entered.textContent = '';
@@ -302,7 +357,7 @@
 
             // 全文字入力したら新しい問題文をセット
             if(remainedTextWords.length <= 0){
-                if(questions.length <= 0){
+                if(sentences.length <= 0){
                     game.classList.add('hidden'); // ゲーム画面を非表示
                     message.classList.remove('hidden'); // 終了メッセージ表示
                 }else{
@@ -312,7 +367,7 @@
         }
     });
 
-    // もう一度プレイするボタン
+    // メニューに戻るボタン
     replayBtn.addEventListener('click', () => {
         window.location.reload();
     });
