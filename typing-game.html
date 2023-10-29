@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>タイピング</title>
+    <title>ITyping</title>
     <style>
     /*
     html5doctor.com Reset Stylesheet
@@ -99,8 +99,10 @@
     /* Reset CSS ここまで */
 
     body {
-        font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+        font-family: 'Itim', cursive;
+        overflow: hidden;
     }
+
     .text-container {
         width: 100vw;
         height: 100vh;
@@ -108,7 +110,9 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        background-color: rgb(30, 30, 30);
     }
+
     .text-container label {
         width: 100%;
         height: 100%;
@@ -117,59 +121,154 @@
         justify-content: center;
         align-items: center;
     }
-    .question {
-        display: flex;
-        font-size: 4vw;
-        font-weight: bold;
-        letter-spacing: 0.25em;
-        text-align: center;
-    }
+
     .marker {
-        background: #91dbf1;
+        color: yellow;
     }
+
+    .premarker {
+        color: white;
+    }
+
+    .game-title {
+        font-size: 15rem;
+        color: #fff;
+        margin: 100px;
+    }
+
+    .start-button {
+    font-family: 'Itim', cursive;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #32323232;
+    border-radius: 50%;
+    line-height: 80px;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: #121212;
+    -webkit-box-shadow: 0 5px 0 #121212;
+    box-shadow: 0 5px 0 #121212;
+    margin: 10px;
+    }
+
+    .start-button:hover {
+    -webkit-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+    -webkit-box-shadow: 0 2px 0 #121212;
+    box-shadow: 0 2px 0 #121212;
+    }
+
+    .timer {
+    font-size: 7rem;
+    color: white;
+    margin: 80px;
+    }
+
+    .replay-button {
+    font-family: 'Itim', cursive;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #32323232;
+    border-radius: 50%;
+    line-height: 80px;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: #121212;
+    -webkit-box-shadow: 0 5px 0 #121212;
+    box-shadow: 0 5px 0 #121212;
+    margin: 100px;
+    }
+
+    .replay-button:hover {
+    -webkit-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+    -webkit-box-shadow: 0 2px 0 #121212;
+    box-shadow: 0 2px 0 #121212;
+    }
+
     .text {
-        width: 100%;
-        border: none;
-        margin-top: 2rem;
-        font-size: 2vw;
-        letter-spacing: 0.1em;
-        text-align: center;
+    width: 100%;
+    border: none;
+    margin-top: 2rem;
+    font-size: 2vw;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: transparent;
+    background-color: transparent;
     }
     .text:focus, .text:focus-visible {
-        border: none;
-        outline: none;
+    border: transparent;
+    outline: transparent;
     }
-    .message {
-        display: block;
-        margin-top: 2rem;
-        font-size: 1.5rem;
-        text-align: center;
+
+    .end-sentence {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     }
-    .button {
-        margin-top: 1rem;
-        font-size: 1rem;
-        cursor: pointer;
-    }
+
     .hidden {
-        display: none;
+    display: none;
     }
+
+    .question {
+    display:inline-flex;
+    position: relative;
+    margin: 2em auto;
+    font-weight: bold;
+    font-size: 5vw;
+    letter-spacing: 0.1em;
+    padding: 1.7em;
+    width: 60%; /* ボックス幅 */
+    background: #006633; /* ボックス背景色 */
+    color: #fff; /* 文章色 */
+    border: 8px solid #b2771f; /* 枠線 */
+    border-radius: 3px; /* 角の丸み */
+    box-shadow: 0 0 5px #333, 0 0 5px #555 inset;
+    }
+    .question::before,
+    .question::after {
+    position: absolute;
+    content: '';
+    bottom: 0;
+    } 
+    .question::before {
+    width: 30px; 
+    right: 30px;
+    border: solid 3px #ffff00; /*チョーク（黄色）*/
+    border-radius: 5px 2px 0 2px;
+    }
+    .question::after {
+    width: 35px; 
+    right: 90px;
+    border: solid 3px #fff; /*チョーク（白） */
+    border-radius: 8px 5px 2px 5px;
+    }
+
     </style>
 </head>
 <body>
-    <div id="game" class="text-container">
+    <div id="startPage" class="text-container">
+        <h1 class="game-title">ITyping</h1>
+        <button id="startBtn" class="start-button">start</button>
+    </div>
+    <div id="game" class="text-container hidden">
         <label for="inputText">
             <div class="question">
                 <span id="entered" class="marker"></span>
-                <span id="remained"></span>
+                <span id="remained" class="premarker"></span>
             </div>
-            <input type="text" class="text" id="inputText" autofocus>
+            <input type="text" class="text" id="inputText" autofocus autocomplete="off" pattern="[a-zA-Z0-9]*">
         </label>
     </div>
 
     <div id="message" class="text-container hidden">
-        <div class="message">
-            ゲームクリア！お疲れ様でした！<br>
-            <button id="replayBtn" class="button">もう一度プレイする</button>
+        <div class="end-sentence">
+            <div id="time" class="timer"></div>
+            <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
 
@@ -177,13 +276,68 @@
     'use strict';
 
     const questions = [
-        'JavaScript',
-        'document',
-        'window',
-        'getElementById',
-        'getElementsByClassName',
-        'addEventListener'
-    ];
+    "algorithm", "API", "application", "backup", "bandwidth", "binary", "bit", "byte", 
+    "cache", "client", "cloud", "compiler", "compression", "cookie", "CPU", "database",
+    "debug", "desktop", "development", "disk", "DNS", "domain", "driver", "email",
+    "encryption", "firewall", "firmware", "frontend", "FTP", "gigabyte",
+    "graphics","GUI","hardware","HTML","HTTP","HTTPS","hyperlink",
+    "IDE","index","internet","IP","Java","JavaScript","kernel","keyboard",
+    "LAN","link","Linux","login","malware","memory","monitor",
+    "motherboard","mouse","multimedia","network","node",
+    "offline","online","opensource","operatingsystem",
+    "password","PHP","pixel","platform",
+    "protocol","Python","query",
+    "RAM","resolution",
+    "router","runtime",
+    "scriptinglanguage","Ajax", "algorithmic", "applet", "argument", "array", "ASP.NET", "assembler", 
+    "asynchronous", "authentication", "backdoor", "bandpass", "baseband", 
+    "benchmarking", "BIOS", "bitrate", "blockchain", "Bluetooth",
+    "bookmark", "booting", "botnet", "breadcrumb", "broadband",
+    "buffer", "bugfix", "busbar", "bytecode",
+    "C++", "callback", "CAPTCHA",
+    "chipset","CLI","client-server","clipboard",
+    "COBOL","codec","commandline","comment","compiler",
+    "computing","concatenation","conditional","configuration",
+    "connectivity","constructor","container",
+    "CORS","crawling","cryptography",
+    "CSS","CSV","cybersecurity",
+    "daemon","dataflow","datagram",
+    "debugger","decryption","defragmentation",
+    "dequeue","dereference","DHCP","daemon","dataflow","datagram",
+    "debugger","decryption","defragmentation","dequeue","dereference","DHCP","dialup","digital","diode",
+    "directx","disassembler","DLL","DNSSEC","doctype",
+    "DOM","dotnet","download","drag-and-drop",
+    "DSL","DTD","dualboot",
+    "Eclipse","ECMAScript","edgecomputing",
+    "EEPROM","EIGRP","Elasticsearch",
+    "embed","emoji","emulator",
+    "encryptionkey","endpoint",
+    "EntityFramework",
+    "EPROM","Ethernet",
+    "eventhandler",
+    "exceptionhandling",
+    "executable",
+    "Express.js",
+    "extranet",
+    "failover",
+    "favicon",
+    "FDDI",
+    "fetchAPI",
+    "FiberOptic","FIFO", "fileserver", "firewire", "firmware", "flash", "flavor", "floatingpoint",
+    "flowchart", "flush", "font", "formfactor", "framework", "frontend",
+    "fullstack", "functionality", "gaming", "gateway", 
+    "GCC", "GIF", "git", "glitch", 
+    "globbing", "Golang","gradient","graphicscard","grid", "gzip", "hackathon", "handle", "hashing", "haskell", 
+    "header", "heap", "hexadecimal", "hierarchy", "hosting", 
+    "HTML5", "HTTP2", "HTTPS", "hyperthreading", 
+    "IDE", "iframe", "IMAP", "immutable","inheritance", "input", "instance", "integer", "interface", 
+    "interpreter", "IoT", "iteration", "JavaFX", 
+    "JDK", "JIT", "join", "JSON", 
+    "JVM", "keyframe", "keyword","lambda", "LAN", "laptop", "latency", "layer", 
+    "LDAP", "library", "linker", "Linux", 
+    "list", "localhost", "lock", "logarithm", 
+    "login", "loop", "machinelearning",
+];
 
     const entered = document.getElementById('entered');
     const remained = document.getElementById('remained');
@@ -191,21 +345,38 @@
     const game = document.getElementById('game');
     const message = document.getElementById('message');
     const replayBtn = document.getElementById('replayBtn');
+    const startBtn = document.getElementById('startBtn');
+    const startPage = document.getElementById('startPage');
+    const timeElement = document.getElementById('time');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
+    let sentences = [];
     let currentKey;
     let currentText;
+
+    //開始ボタンを押された時の処理
+    startBtn.addEventListener('click', () => {
+        game.classList.remove('hidden');
+        startPage.classList.add('hidden');
+        inputText.focus();
+     
+    //配列questionからランダムで10個配列sentencesに代入
+    for(let i = 0; i < 1; i++){
+        let index = Math.floor(Math.random() * questions.length);
+        sentences.push(questions[index]);
+        questions.splice(index, 1);
+    };
 
     // 新しい問題文をランダムにセットする関数
     const setQuestion = () => {
 
         // 問題文をランダムで選ぶ
-        currentKey = Math.floor( Math.random() * questions.length );
-        currentText = questions[ currentKey ];
+        currentKey = Math.floor( Math.random() * sentences.length );
+        currentText = sentences[ currentKey ];
 
         // 一度選ばれた問題は配列から削除
-        questions.splice(currentKey, 1);
+        sentences.splice(currentKey, 1);
 
         // 画面に新しい問題文をセット
         entered.textContent = '';
@@ -220,8 +391,14 @@
     };
     setQuestion();
 
+        //カウントスタート
+        let startTime = performance.now();
+
+    //入力された文字の正誤判定とその後の処理
     document.addEventListener('input', (e) => {
-        if(remainedTextWords[0] === e.data){
+
+            //大文字小文字の識別なし
+        if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
 
             // 入力済み文字の配列の最後に1文字追加
             enteredTextWords.push( remainedTextWords[0] );
@@ -234,17 +411,23 @@
 
             // 全文字入力したら新しい問題文をセット
             if(remainedTextWords.length <= 0){
-                if(questions.length <= 0){
+                if(sentences.length <= 0){
                     game.classList.add('hidden'); // ゲーム画面を非表示
                     message.classList.remove('hidden'); // 終了メッセージ表示
+                    let endTime = performance.now();
+                    let elapsedTime = endTime - startTime;
+                    let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
+                    console.log(`${elapsedTimeInSeconds.toFixed(2)}`)
+                    timeElement.textContent = `your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
                 }else{
                     setQuestion(); // 新しい問題文をセット
                 }
             }
         }
     });
+    });
 
-    // もう一度プレイするボタン
+    // メニューに戻るボタン
     replayBtn.addEventListener('click', () => {
         window.location.reload();
     });
