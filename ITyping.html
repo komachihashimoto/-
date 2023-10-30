@@ -248,6 +248,12 @@
     border-radius: 8px 5px 2px 5px;
     }
 
+    .countdown {
+    font-size: 10rem;
+    color: #fff;
+    }
+
+
     </style>
 </head>
 <body>
@@ -255,13 +261,16 @@
         <h1 class="game-title">ITyping</h1>
         <button id="startBtn" class="start-button">start</button>
     </div>
+    <div id="countdown" class="text-container hidden">
+        <div id="second" class="countdown"></div>
+    </div>
     <div id="game" class="text-container hidden">
         <label for="inputText">
             <div class="question">
                 <span id="entered" class="marker"></span>
                 <span id="remained" class="premarker"></span>
             </div>
-            <input type="text" class="text" id="inputText" autofocus autocomplete="off" pattern="[a-zA-Z0-9]*">
+            <input type="text" class="text" id="inputText" autofocus autocomplete="off">
         </label>
     </div>
 
@@ -348,84 +357,102 @@
     const startBtn = document.getElementById('startBtn');
     const startPage = document.getElementById('startPage');
     const timeElement = document.getElementById('time');
+    const countdownElement = document.getElementById('countdown');
+    const second = document.getElementById('second')
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
     let sentences = [];
     let currentKey;
     let currentText;
+    let countdown;
 
     //開始ボタンを押された時の処理
     startBtn.addEventListener('click', () => {
-        game.classList.remove('hidden');
+        countdownElement.classList.remove('hidden');
         startPage.classList.add('hidden');
-        inputText.focus();
+        let countdownTime = 3; // カウントダウンの時間（秒）
+
+        // カウントダウンを開始
+    countdown = setInterval(function() {
+        if(countdownTime > 0) {
+            second.innerText = countdownTime;
+            countdownTime--;
+        } else {
+            clearInterval(countdown);
+            countdownElement.classList.add('hidden');
+            game.classList.remove('hidden');
+            inputText.focus();
+
      
-    //配列questionからランダムで10個配列sentencesに代入
-    for(let i = 0; i < 1; i++){
-        let index = Math.floor(Math.random() * questions.length);
-        sentences.push(questions[index]);
-        questions.splice(index, 1);
-    };
+        //配列questionからランダムで10個配列sentencesに代入
+        for(let i = 0; i < 1; i++){
+            let index = Math.floor(Math.random() * questions.length);
+            sentences.push(questions[index]);
+            questions.splice(index, 1);
+        };
 
-    // 新しい問題文をランダムにセットする関数
-    const setQuestion = () => {
+        // 新しい問題文をランダムにセットする関数
+        const setQuestion = () => {
 
-        // 問題文をランダムで選ぶ
-        currentKey = Math.floor( Math.random() * sentences.length );
-        currentText = sentences[ currentKey ];
+            // 問題文をランダムで選ぶ
+            currentKey = Math.floor( Math.random() * sentences.length );
+            currentText = sentences[ currentKey ];
 
-        // 一度選ばれた問題は配列から削除
-        sentences.splice(currentKey, 1);
+            // 一度選ばれた問題は配列から削除
+            sentences.splice(currentKey, 1);
 
-        // 画面に新しい問題文をセット
-        entered.textContent = '';
-        remained.textContent = currentText;
+            // 画面に新しい問題文をセット
+            entered.textContent = '';
+            remained.textContent = currentText;
 
-        // これまでフォームに入力された値をリセット
-        inputText.value = '';
+            // これまでフォームに入力された値をリセット
+            inputText.value = '';
 
-        // 「入力済み文字」「未入力文字」の配列の中身をリセット
-        enteredTextWords = [];
-        remainedTextWords = currentText.split('');
-    };
-    setQuestion();
+            // 「入力済み文字」「未入力文字」の配列の中身をリセット
+            enteredTextWords = [];
+            remainedTextWords = currentText.split('');
+        };
+        setQuestion();
 
-        //カウントスタート
-        let startTime = performance.now();
+            //カウントスタート
+            let startTime = performance.now();
 
-    //入力された文字の正誤判定とその後の処理
-    document.addEventListener('input', (e) => {
+        //入力された文字の正誤判定とその後の処理
+        document.addEventListener('input', (e) => {
 
-            //大文字小文字の識別なし
-        if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
+                //大文字小文字の識別なし
+            if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
 
-            // 入力済み文字の配列の最後に1文字追加
-            enteredTextWords.push( remainedTextWords[0] );
-            // 未入力文字の配列の先頭から1文字削除
-            remainedTextWords.shift();
+                // 入力済み文字の配列の最後に1文字追加
+                enteredTextWords.push( remainedTextWords[0] );
+                // 未入力文字の配列の先頭から1文字削除
+                remainedTextWords.shift();
 
-            // 入力済みテキスト＆未入力テキストを連結して画面表示
-            entered.textContent = enteredTextWords.join('');
-            remained.textContent = remainedTextWords.join('');
+                // 入力済みテキスト＆未入力テキストを連結して画面表示
+                entered.textContent = enteredTextWords.join('');
+                remained.textContent = remainedTextWords.join('');
 
-            // 全文字入力したら新しい問題文をセット
-            if(remainedTextWords.length <= 0){
-                if(sentences.length <= 0){
-                    game.classList.add('hidden'); // ゲーム画面を非表示
-                    message.classList.remove('hidden'); // 終了メッセージ表示
-                    let endTime = performance.now();
-                    let elapsedTime = endTime - startTime;
-                    let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
-                    console.log(`${elapsedTimeInSeconds.toFixed(2)}`)
-                    timeElement.textContent = `your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
-                }else{
-                    setQuestion(); // 新しい問題文をセット
+                // 全文字入力したら新しい問題文をセット
+                if(remainedTextWords.length <= 0){
+                    if(sentences.length <= 0){
+                        game.classList.add('hidden'); // ゲーム画面を非表示
+                        message.classList.remove('hidden'); // 終了メッセージ表示
+                        let endTime = performance.now();
+                        let elapsedTime = endTime - startTime;
+                        let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
+                        console.log(`${elapsedTimeInSeconds.toFixed(2)}`)
+                        timeElement.textContent = `your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
+                    }else{
+                        setQuestion(); // 新しい問題文をセット
+                    }
                 }
             }
-        }
+        });
+    }
+    }, 1000);
     });
-    });
+
 
     // メニューに戻るボタン
     replayBtn.addEventListener('click', () => {
