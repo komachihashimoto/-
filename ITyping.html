@@ -257,6 +257,15 @@
     </style>
 </head>
 <body>
+    <div class="audio">
+        <audio id="countSound" src="カウントダウン.mp3"></audio>
+        <audio id="lastCountSound" src="カウントダウンラスト.mp3"></audio>
+        <audio id="clearSound" src="クリア.mp3"></audio>
+        <audio id="typingSound" src="タイピング音.mp3"></audio>
+        <audio id="missSound" src="ミス.mp3"></audio>
+        <audio id="resultSound" src="リザルト.mp3"></audio>
+        <audio id="btnSound" src="各ボタン音.mp3"></audio>
+    </div>
     <div id="startPage" class="text-container">
         <h1 class="game-title">ITyping</h1>
         <button id="startBtn" class="start-button">start</button>
@@ -359,6 +368,13 @@
     const timeElement = document.getElementById('time');
     const countdownElement = document.getElementById('countdown');
     const second = document.getElementById('second')
+    const countSound = document.getElementById('countSound');
+    const lastCountSound = document.getElementById('lastCountSound');
+    const clearSound = document.getElementById('clearSound');
+    const typingSound = document.getElementById('typingSound');
+    const missSound = document.getElementById('missSound');
+    const resultSound = document.getElementById('resultSound');
+    const btnSound = document.getElementById('btnSound');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
@@ -366,6 +382,41 @@
     let currentKey;
     let currentText;
     let countdown;
+
+    //カウントダウン音
+    function playCount() {
+        countSound.play();
+    }
+
+    //ラストカウントダウン音
+    function playLastCount() {
+        lastCountSound.play();
+    }
+
+    //クリア音
+    function playClear() {
+        clearSound.play();
+    }
+
+    //タイピング音
+    function playTyping() {
+        typingSound.play();
+    }
+
+    //ミス音
+    function playMiss() {
+        missSound.play();
+    }
+
+    //リザルト音
+    function playResult() {
+        resultSound.play();
+    }
+
+    //各ボタン音
+    function playBtn() {
+        btnSound.play();
+    }
 
     //開始ボタンを押された時の処理
     startBtn.addEventListener('click', () => {
