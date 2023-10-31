@@ -162,7 +162,13 @@
     .timer {
     font-size: 7rem;
     color: white;
-    margin: 80px;
+    margin: 40px;
+    }
+
+    .miss-count {
+    font-size: 7rem;
+    color: white;
+    margin: 40px;
     }
 
     .replay-button {
@@ -178,7 +184,7 @@
     border: #121212;
     -webkit-box-shadow: 0 5px 0 #121212;
     box-shadow: 0 5px 0 #121212;
-    margin: 100px;
+    margin: 40px;
     }
 
     .replay-button:hover {
@@ -248,12 +254,30 @@
     border-radius: 8px 5px 2px 5px;
     }
 
+    .countdown {
+    font-size: 10rem;
+    color: #fff;
+    }
+
+
     </style>
 </head>
 <body>
+    <div class="audio">
+        <audio id="countSound" src="カウントダウン.mp3"></audio>
+        <audio id="lastCountSound" src="カウントダウンラスト.mp3"></audio>
+        <audio id="clearSound" src="クリア.mp3"></audio>
+        <audio id="typingSound" src="タイピング音.mp3"></audio>
+        <audio id="missSound" src="ミス.mp3"></audio>
+        <audio id="resultSound" src="リザルト.mp3"></audio>
+        <audio id="btnSound" src="各ボタン音.mp3"></audio>
+    </div>
     <div id="startPage" class="text-container">
         <h1 class="game-title">ITyping</h1>
         <button id="startBtn" class="start-button">start</button>
+    </div>
+    <div id="countdown" class="text-container hidden">
+        <div id="second" class="countdown"></div>
     </div>
     <div id="game" class="text-container hidden">
         <label for="inputText">
@@ -261,13 +285,14 @@
                 <span id="entered" class="marker"></span>
                 <span id="remained" class="premarker"></span>
             </div>
-            <input type="text" class="text" id="inputText" autofocus autocomplete="off" pattern="[a-zA-Z0-9]*">
+            <input type="text" class="text" id="inputText" autofocus autocomplete="off" >
         </label>
     </div>
 
     <div id="message" class="text-container hidden">
         <div class="end-sentence">
-            <div id="time" class="timer"></div>
+            <div id="time" class="timer"><br></div>
+            <div id="miss" class="miss-count"></div>
             <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
@@ -348,88 +373,180 @@
     const startBtn = document.getElementById('startBtn');
     const startPage = document.getElementById('startPage');
     const timeElement = document.getElementById('time');
+    const countdownElement = document.getElementById('countdown');
+    const second = document.getElementById('second')
+    const countSound = document.getElementById('countSound');
+    const lastCountSound = document.getElementById('lastCountSound');
+    const clearSound = document.getElementById('clearSound');
+    const typingSound = document.getElementById('typingSound');
+    const missSound = document.getElementById('missSound');
+    const resultSound = document.getElementById('resultSound');
+    const btnSound = document.getElementById('btnSound');
+    const miss = document.getElementById('miss');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
     let sentences = [];
     let currentKey;
     let currentText;
+    let countdown;
+    let missCount = 0;
+
+    //カウントダウン音
+    function playCount() {
+        countSound.currentTime = 0;
+        countSound.play();
+    }
+
+    //ラストカウントダウン音
+    function playLastCount() {
+        lastCountSound.currentTime = 0;
+        lastCountSound.play();
+    }
+
+    //クリア音
+    function playClear() {
+        clearSound.currentTime = 0;
+        clearSound.play();
+    }
+
+    //タイピング音
+    function playTyping() {
+        typingSound.currentTime = 0;
+        typingSound.play();
+    }
+
+    //ミス音
+    function playMiss() {
+        missSound.currentTime = 0;
+        missSound.play();
+    }
+
+    //リザルト音
+    function playResult() {
+        resultSound.play();
+    }
+
+    //各ボタン音
+    function playBtn() {
+        resultSound.pause();
+        resultSound.currentTime = 0;
+        btnSound.currentTime = 0;
+        btnSound.play();
+    }
 
     //開始ボタンを押された時の処理
     startBtn.addEventListener('click', () => {
-        game.classList.remove('hidden');
+        playBtn(); //サウンド再生
+        countdownElement.classList.remove('hidden');
         startPage.classList.add('hidden');
-        inputText.focus();
+        let countdownTime = 3; // カウントダウンの時間（秒）
+
+        // カウントダウンを開始
+    countdown = setInterval(function() {
+        if(countdownTime > 0) {
+            if(countdownTime === 3) {
+                playCount();
+            };
+            if(countdownTime === 2) {
+                playCount();
+            };
+            if(countdownTime === 1) {
+                playCount();
+            };
+            second.innerText = countdownTime;
+            countdownTime--;
+        } else {
+            playLastCount();
+            clearInterval(countdown);
+            countdownElement.classList.add('hidden');
+            game.classList.remove('hidden');
+            inputText.focus();
+
      
-    //配列questionからランダムで10個配列sentencesに代入
-    for(let i = 0; i < 1; i++){
-        let index = Math.floor(Math.random() * questions.length);
-        sentences.push(questions[index]);
-        questions.splice(index, 1);
-    };
+        //配列questionからランダムで10個配列sentencesに代入
+        for(let i = 0; i < 3; i++){
+            let index = Math.floor(Math.random() * questions.length);
+            sentences.push(questions[index]);
+            questions.splice(index, 1);
+        };
 
-    // 新しい問題文をランダムにセットする関数
-    const setQuestion = () => {
+        // 新しい問題文をランダムにセットする関数
+        const setQuestion = () => {
 
-        // 問題文をランダムで選ぶ
-        currentKey = Math.floor( Math.random() * sentences.length );
-        currentText = sentences[ currentKey ];
+            // 問題文をランダムで選ぶ
+            currentKey = Math.floor( Math.random() * sentences.length );
+            currentText = sentences[ currentKey ];
 
-        // 一度選ばれた問題は配列から削除
-        sentences.splice(currentKey, 1);
+            // 一度選ばれた問題は配列から削除
+            sentences.splice(currentKey, 1);
 
-        // 画面に新しい問題文をセット
-        entered.textContent = '';
-        remained.textContent = currentText;
+            // 画面に新しい問題文をセット
+            entered.textContent = '';
+            remained.textContent = currentText;
 
-        // これまでフォームに入力された値をリセット
-        inputText.value = '';
+            // これまでフォームに入力された値をリセット
+            inputText.value = '';
 
-        // 「入力済み文字」「未入力文字」の配列の中身をリセット
-        enteredTextWords = [];
-        remainedTextWords = currentText.split('');
-    };
-    setQuestion();
+            // 「入力済み文字」「未入力文字」の配列の中身をリセット
+            enteredTextWords = [];
+            remainedTextWords = currentText.split('');
+        };
+        setQuestion();
 
-        //カウントスタート
-        let startTime = performance.now();
+            //カウントスタート
+            let startTime = performance.now();
 
-    //入力された文字の正誤判定とその後の処理
-    document.addEventListener('input', (e) => {
+        //入力された文字の正誤判定とその後の処理
+        document.addEventListener('input', (e) => {
 
-            //大文字小文字の識別なし
-        if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
+                //大文字小文字の識別なし
+            if(remainedTextWords[0].toLowerCase() === e.data.toLowerCase()){
 
-            // 入力済み文字の配列の最後に1文字追加
-            enteredTextWords.push( remainedTextWords[0] );
-            // 未入力文字の配列の先頭から1文字削除
-            remainedTextWords.shift();
+                //タイピング音
+                playTyping();
 
-            // 入力済みテキスト＆未入力テキストを連結して画面表示
-            entered.textContent = enteredTextWords.join('');
-            remained.textContent = remainedTextWords.join('');
+                // 入力済み文字の配列の最後に1文字追加
+                enteredTextWords.push( remainedTextWords[0] );
+                // 未入力文字の配列の先頭から1文字削除
+                remainedTextWords.shift();
 
-            // 全文字入力したら新しい問題文をセット
-            if(remainedTextWords.length <= 0){
-                if(sentences.length <= 0){
-                    game.classList.add('hidden'); // ゲーム画面を非表示
-                    message.classList.remove('hidden'); // 終了メッセージ表示
-                    let endTime = performance.now();
-                    let elapsedTime = endTime - startTime;
-                    let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
-                    console.log(`${elapsedTimeInSeconds.toFixed(2)}`)
-                    timeElement.textContent = `your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
-                }else{
-                    setQuestion(); // 新しい問題文をセット
+                // 入力済みテキスト＆未入力テキストを連結して画面表示
+                entered.textContent = enteredTextWords.join('');
+                remained.textContent = remainedTextWords.join('');
+
+                // 全文字入力したら新しい問題文をセット
+                if(remainedTextWords.length <= 0){
+                    if(sentences.length <= 0){
+                        playClear(); //サウンド再生
+                        playResult(); //*
+                        game.classList.add('hidden'); // ゲーム画面を非表示
+                        message.classList.remove('hidden'); // 終了メッセージ表示
+                        let endTime = performance.now();
+                        let elapsedTime = endTime - startTime;
+                        let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
+                        timeElement.textContent = `Your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
+                        miss.textContent = `Miss: ${ missCount } `;
+                    }else{
+                        playClear(); //サウンド再生
+                        setQuestion(); // 新しい問題文をセット
+                    }
                 }
+            }else{
+                missCount = missCount + 1;
+                playMiss(); //サウンド再生
             }
-        }
+        });
+    }
+    }, 1000);
     });
-    });
+
 
     // メニューに戻るボタン
     replayBtn.addEventListener('click', () => {
-        window.location.reload();
+        playBtn(); //サウンド再生
+        setTimeout(()=> {window.location.reload();
+        },500);
     });
     </script>
 </body>
