@@ -160,13 +160,19 @@
     }
 
     .timer {
-    font-size: 7rem;
+    font-size: 5rem;
     color: white;
     margin: 40px;
     }
 
     .miss-count {
-    font-size: 7rem;
+    font-size: 5rem;
+    color: white;
+    margin: 40px;
+    }
+
+    .words-per-minute {
+    font-size: 5rem;
     color: white;
     margin: 40px;
     }
@@ -293,6 +299,7 @@
         <div class="end-sentence">
             <div id="time" class="timer"><br></div>
             <div id="miss" class="miss-count"></div>
+            <div id="WPM" class="words-per-minute"></div>
             <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
@@ -383,6 +390,7 @@
     const resultSound = document.getElementById('resultSound');
     const btnSound = document.getElementById('btnSound');
     const miss = document.getElementById('miss');
+    const WPM = document.getElementById('WPM');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords = [];
@@ -391,6 +399,7 @@
     let currentText;
     let countdown;
     let missCount = 0;
+    let typeCount = 0;
 
     //カウントダウン音
     function playCount() {
@@ -506,6 +515,9 @@
                 //タイピング音
                 playTyping();
 
+                //正タイピング回数
+                typeCount = typeCount + 1;
+
                 // 入力済み文字の配列の最後に1文字追加
                 enteredTextWords.push( remainedTextWords[0] );
                 // 未入力文字の配列の先頭から1文字削除
@@ -525,8 +537,10 @@
                         let endTime = performance.now();
                         let elapsedTime = endTime - startTime;
                         let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
-                        timeElement.textContent = `Your time is: ${elapsedTimeInSeconds.toFixed(2)} !!`; //タイム表示(小数点第2位)
-                        miss.textContent = `Miss: ${ missCount } `;
+                        timeElement.textContent = `time : ${elapsedTimeInSeconds.toFixed(2)} `; //タイム表示(小数点第2位)
+                        let wpm = (typeCount / elapsedTimeInSeconds) * 60; //wpmの計算
+                        WPM.textContent = `wpm : ${wpm.toFixed(2)}`; //wpmの出力
+                        miss.textContent = `miss : ${ missCount } `;
                     }else{
                         playClear(); //サウンド再生
                         setQuestion(); // 新しい問題文をセット
