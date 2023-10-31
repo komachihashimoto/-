@@ -130,6 +130,16 @@
     color: white;
     }
 
+    ::-webkit-scrollbar {
+    background-color: #530000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 15px;
+    border: 11px outset #d1d1d1;
+    }
+
     .game-title {
     font-size: 15rem;
     color: #fff;
@@ -147,10 +157,11 @@
     font-weight: bold;
     font-size: 2em;
     padding: 1.2em;
+    overflow-y: auto;
     width: 60%; /* ボックス幅 */
-    background: #006633; /* ボックス背景色 */
+    background: #530000; /* ボックス背景色 */
     color: #fff; /* 文章色 */
-    border: 8px solid #b2771f; /* 枠線 */
+    border: 8px solid #613a00; /* 枠線 */
     border-radius: 3px; /* 角の丸み */
     box-shadow: 0 0 5px #333, 0 0 5px #555 inset;
     }
@@ -161,20 +172,6 @@
     content: '';
     bottom: 0;
     } 
-
-    .details::before{
-    width: 30px; 
-    right: 30px;
-    border: solid 3px #ff6af3; /*チョーク（黄色）*/
-    border-radius: 5px 2px 0 2px;
-    }
-
-    .details::after{
-    width: 35px; 
-    right: 90px;
-    border: solid 3px #fff; /*チョーク（白） */
-    border-radius: 8px 5px 2px 5px;
-    }
 
     .details-headline {
     font-size: 1.3em;
@@ -208,22 +205,54 @@
     box-shadow: 0 2px 0 #121212;
     }
 
-    .timer {
+    .results {
     font-size: 5rem;
     color: white;
-    margin: 40px;
+    position: relative;
+    padding: 1em;
+    width: 110%; /* ボックス幅 */
+    background: #ffffff; /* ボックス背景色 */
+    color: #0e0e0e; /* 文章色 */
+    border: 8px solid #848484; /* 枠線 */
+    border-radius: 3px; /* 角の丸み */
+    box-shadow: 0 0 5px #333, 0 0 5px #555 inset;
+    }
+
+    .results::before,
+    .results::after {
+    position: absolute;
+    content: '';
+    bottom: 0;
+    }
+
+    .results::before {
+    width: 35px; 
+    right: 30px;
+    border: solid 4px #fc0000; /*ペン（赤色）*/
+    border-radius: 2px 2px 2px 2px;
+    }
+
+    .results::after {
+    width: 35px; 
+    right: 90px;
+    border: solid 4px #000000; /*ペン（黒色） */
+    border-radius: 2px 2px 2px 2%;
+    }
+
+    .timer {
+    margin-bottom: 30px;
     }
 
     .miss-count {
-    font-size: 5rem;
-    color: white;
-    margin: 40px;
+    margin: 30px 0;
     }
 
     .words-per-minute {
-    font-size: 5rem;
-    color: white;
-    margin: 40px;
+    margin: 30px 0;
+    }
+
+    .accuracy-late {
+    margin-top: 30px;
     }
 
     .replay-button {
@@ -361,9 +390,21 @@
     <div id="detailsPage" class="text-container hidden">
         <div class="details">
             <h1 class="details-headline">・About this game</h1>
-            <p class="details-text">This game is a typing game of words related to IT. In this game, by typing 10 randomly generated IT-related words, you can see the time to complete the game, WPM, number of mistakes, and accuracy rate.</p>
+            <p class="details-text">This game was created by a boy who has been learning programming for two months. The rules of this game are simple. When the start button is pressed, a countdown begins. Once the game starts, players are asked to type 10 random IT-related words as quickly and accurately as possible. When all the words have been typed, a result screen will be displayed, showing the time it took the player to complete the game, the number of misspelled words, WPM, and accuracy. The benefits of playing this game are to improve your typing speed and accuracy, to learn more about IT terms, and to pass the time. Be careful not to get so absorbed in the game that you forget what you really need to do now. All joking aside, thank you very much for reading this long, long explanation. I did my best to write this sentence because I implemented a partial scroll bar and I wanted to see how it would actually appear. I would like to end with an explanation of the WPM that can be measured in this game.</p><br>
             <h1 class="details-headline">・About WPM</h1>
-            <p class="details-text">WPM is an abbreviation for the number of words typed per minute.</p>
+            <p class="details-text">Words Per Minute refers to the number of words typed per minute in English typing. Strictly speaking, however, it is a little different. Let us explain with an easy-to-understand example.<br><br>
+
+                1. I am good at piano<br>
+                2.You speak Japanese pretty well<br><br>
+                
+                Both 1 and 2 have 5 words, but the number of keys to input is 18 for 1 and 30 for 2.<br>
+                (*Not only alphabets, but also spaces, periods, commas, etc. are counted as one key.)<br><br>
+                
+                Thus, even if the number of words is the same, the number of keys to be entered may differ greatly. Therefore, regardless of the actual number of words entered, the five keys entered are calculated as one word.<br><br>
+                
+                So, if you can type 200 keys per minute, that is 40 wpm. 200 kpm = 40 wpm<br><br>
+                
+                It is important to remember that WPM is the standard for speed in English typing.</p>
         </div>
         <div id="backBtn" class="menu-button">menu</div>
     </div>
@@ -382,9 +423,12 @@
 
     <div id="message" class="text-container hidden">
         <div class="end-sentence">
-            <div id="time" class="timer"><br></div>
-            <div id="miss" class="miss-count"></div>
-            <div id="WPM" class="words-per-minute"></div>
+            <div class="results">
+                <div id="time" class="timer"></div>
+                <div id="miss" class="miss-count"></div>
+                <div id="WPM" class="words-per-minute"></div>
+                <div id="accuracyLate" class="accuracy-late"></div>
+            </div>
             <button id="replayBtn" class="replay-button">menu</button>
         </div>
     </div>
@@ -479,6 +523,7 @@
     const btnSound         = document.getElementById('btnSound');
     const miss             = document.getElementById('miss');
     const WPM              = document.getElementById('WPM');
+    const accuracyLate     = document.getElementById('accuracyLate');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords  = [];
@@ -488,6 +533,7 @@
     let countdown;
     let missCount         = 0;
     let typeCount         = 0;
+    let totalType         = 0;
 
     //カウントダウン音
     function playCount() {
@@ -556,7 +602,7 @@
 
      
         //配列questionからランダムで10個配列sentencesに代入
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < 3; i++){
             let index = Math.floor(Math.random() * questions.length);
             sentences.push(questions[index]);
             questions.splice(index, 1);
@@ -620,9 +666,12 @@
                         let elapsedTime = endTime - startTime;
                         let elapsedTimeInSeconds = elapsedTime / 1000; // ミリ秒を秒に変換
                         timeElement.textContent = `time : ${elapsedTimeInSeconds.toFixed(2)} `; //タイム表示(小数点第2位)
-                        let wpm = (typeCount / elapsedTimeInSeconds) * 60; //wpmの計算
-                        WPM.textContent = `wpm : ${wpm.toFixed(2)}`; //wpmの出力
-                        miss.textContent = `miss : ${ missCount } `;
+                        let wpm = ((typeCount / elapsedTimeInSeconds) * 60) / 5; //wpmの計算
+                        totalType = typeCount + missCount; //総タイプ数の計算
+                        let accuracy = (typeCount / totalType) * 100; //正タイプ率の計算
+                        accuracyLate.textContent = `accuracy : ${accuracy.toFixed(2)}%`; //正タイプ率の表示
+                        WPM.textContent = `wpm : ${wpm.toFixed(2)}`; //wpmの表示
+                        miss.textContent = `miss : ${missCount} `; //ミス数の表示
                     }else{
                         playClear(); //サウンド再生
                         setQuestion(); // 新しい問題文をセット
@@ -649,7 +698,7 @@
     btn.addEventListener('click', () => {
         playBtn(); //サウンド再生
         setTimeout(()=> {window.location.reload();
-        },500);
+        },300);
     });
     });
     
