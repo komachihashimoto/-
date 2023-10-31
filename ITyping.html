@@ -99,41 +99,90 @@
     /* Reset CSS ここまで */
 
     body {
-        font-family: 'Itim', cursive;
-        overflow: hidden;
+    font-family: 'Itim', cursive;
+    overflow: hidden;
     }
 
     .text-container {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: rgb(30, 30, 30);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(30, 30, 30);
     }
 
     .text-container label {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     }
 
     .marker {
-        color: yellow;
+    color: yellow;
     }
 
     .premarker {
-        color: white;
+    color: white;
     }
 
     .game-title {
-        font-size: 15rem;
-        color: #fff;
-        margin: 100px;
+    font-size: 15rem;
+    color: #fff;
+    margin: 100px;
+    }
+
+    .buttons {
+    display: flex;
+    }
+
+    .details {
+    line-height: 1.7em;
+    position: relative;
+    margin: 2em auto;
+    font-weight: bold;
+    font-size: 2em;
+    padding: 1.2em;
+    width: 60%; /* ボックス幅 */
+    background: #006633; /* ボックス背景色 */
+    color: #fff; /* 文章色 */
+    border: 8px solid #b2771f; /* 枠線 */
+    border-radius: 3px; /* 角の丸み */
+    box-shadow: 0 0 5px #333, 0 0 5px #555 inset;
+    }
+
+    .details::after,
+    .details::before{
+    position: absolute;
+    content: '';
+    bottom: 0;
+    } 
+
+    .details::before{
+    width: 30px; 
+    right: 30px;
+    border: solid 3px #ff6af3; /*チョーク（黄色）*/
+    border-radius: 5px 2px 0 2px;
+    }
+
+    .details::after{
+    width: 35px; 
+    right: 90px;
+    border: solid 3px #fff; /*チョーク（白） */
+    border-radius: 8px 5px 2px 5px;
+    }
+
+    .details-headline {
+    font-size: 1.3em;
+    margin: 15px 0;
+    }
+
+    .details-text {
+    margin-left: 42px;
     }
 
     .start-button {
@@ -194,6 +243,30 @@
     }
 
     .replay-button:hover {
+    -webkit-transform: translate(0, 3px);
+    transform: translate(0, 3px);
+    -webkit-box-shadow: 0 2px 0 #121212;
+    box-shadow: 0 2px 0 #121212;
+    }
+
+    .menu-button {
+    font-family: 'Itim', cursive;
+    font-size: 2rem;
+    color: #fff;
+    background-color: #32323232;
+    border-radius: 50%;
+    line-height: 140px;
+    text-align: center;
+    width: 150px;
+    height: 150px;
+    padding: 0;
+    border: #121212;
+    -webkit-box-shadow: 0 5px 0 #121212;
+    box-shadow: 0 5px 0 #121212;
+    margin: 40px;
+    }
+
+    .menu-button:hover {
     -webkit-transform: translate(0, 3px);
     transform: translate(0, 3px);
     -webkit-box-shadow: 0 2px 0 #121212;
@@ -280,7 +353,19 @@
     </div>
     <div id="startPage" class="text-container">
         <h1 class="game-title">ITyping</h1>
-        <button id="startBtn" class="start-button">start</button>
+        <div class="buttons">
+            <button id="startBtn" class="start-button">start</button>
+            <button id="detailsBtn" class="start-button">details</button>
+        </div>
+    </div>
+    <div id="detailsPage" class="text-container hidden">
+        <div class="details">
+            <h1 class="details-headline">・About this game</h1>
+            <p class="details-text">This game is a typing game of words related to IT. In this game, by typing 10 randomly generated IT-related words, you can see the time to complete the game, WPM, number of mistakes, and accuracy rate.</p>
+            <h1 class="details-headline">・About WPM</h1>
+            <p class="details-text">WPM is an abbreviation for the number of words typed per minute.</p>
+        </div>
+        <div id="backBtn" class="menu-button">menu</div>
     </div>
     <div id="countdown" class="text-container hidden">
         <div id="second" class="countdown"></div>
@@ -371,35 +456,38 @@
     "login", "loop", "machinelearning",
 ];
 
-    const entered = document.getElementById('entered');
-    const remained = document.getElementById('remained');
-    const inputText = document.getElementById('inputText');
-    const game = document.getElementById('game');
-    const message = document.getElementById('message');
-    const replayBtn = document.getElementById('replayBtn');
-    const startBtn = document.getElementById('startBtn');
-    const startPage = document.getElementById('startPage');
-    const timeElement = document.getElementById('time');
+    const entered          = document.getElementById('entered');
+    const remained         = document.getElementById('remained');
+    const inputText        = document.getElementById('inputText');
+    const game             = document.getElementById('game');
+    const message          = document.getElementById('message');
+    const replayBtn        = document.getElementById('replayBtn');
+    const startBtn         = document.getElementById('startBtn');
+    const backBtn          = document.getElementById('backBtn');
+    const detailsBtn       = document.getElementById('detailsBtn');
+    const startPage        = document.getElementById('startPage');
+    const detailsPage      = document.getElementById('detailsPage');
+    const timeElement      = document.getElementById('time');
     const countdownElement = document.getElementById('countdown');
-    const second = document.getElementById('second')
-    const countSound = document.getElementById('countSound');
-    const lastCountSound = document.getElementById('lastCountSound');
-    const clearSound = document.getElementById('clearSound');
-    const typingSound = document.getElementById('typingSound');
-    const missSound = document.getElementById('missSound');
-    const resultSound = document.getElementById('resultSound');
-    const btnSound = document.getElementById('btnSound');
-    const miss = document.getElementById('miss');
-    const WPM = document.getElementById('WPM');
+    const second           = document.getElementById('second');
+    const countSound       = document.getElementById('countSound');
+    const lastCountSound   = document.getElementById('lastCountSound');
+    const clearSound       = document.getElementById('clearSound');
+    const typingSound      = document.getElementById('typingSound');
+    const missSound        = document.getElementById('missSound');
+    const resultSound      = document.getElementById('resultSound');
+    const btnSound         = document.getElementById('btnSound');
+    const miss             = document.getElementById('miss');
+    const WPM              = document.getElementById('WPM');
 
     let remainedTextWords = remained.textContent.split('');
-    let enteredTextWords = [];
-    let sentences = [];
+    let enteredTextWords  = [];
+    let sentences         = [];
     let currentKey;
     let currentText;
     let countdown;
-    let missCount = 0;
-    let typeCount = 0;
+    let missCount         = 0;
+    let typeCount         = 0;
 
     //カウントダウン音
     function playCount() {
@@ -444,7 +532,7 @@
         btnSound.play();
     }
 
-    //開始ボタンを押された時の処理
+    //startボタンを押された時の処理
     startBtn.addEventListener('click', () => {
         playBtn(); //サウンド再生
         countdownElement.classList.remove('hidden');
@@ -454,13 +542,7 @@
         // カウントダウンを開始
     countdown = setInterval(function() {
         if(countdownTime > 0) {
-            if(countdownTime === 3) {
-                playCount();
-            };
-            if(countdownTime === 2) {
-                playCount();
-            };
-            if(countdownTime === 1) {
+            if(Number.isInteger(countdownTime)) {
                 playCount();
             };
             second.innerText = countdownTime;
@@ -555,13 +637,22 @@
     }, 1000);
     });
 
+    //detailsボタンが押された時の処理
+    detailsBtn.addEventListener('click', () => {
+        playBtn(); //サウンド再生
+        detailsPage.classList.remove('hidden');
+        startPage.classList.add('hidden');
+    });
 
-    // メニューに戻るボタン
-    replayBtn.addEventListener('click', () => {
+    //menuボタンが押された時の処理
+    [backBtn, replayBtn].forEach(btn => {
+    btn.addEventListener('click', () => {
         playBtn(); //サウンド再生
         setTimeout(()=> {window.location.reload();
         },500);
     });
+    });
+    
     </script>
 </body>
 </html>
