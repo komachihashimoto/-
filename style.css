@@ -240,7 +240,7 @@
   border: #121212;
   -webkit-box-shadow: 0 5px 0 #121212;
   box-shadow: 0 5px 0 #121212;
-  margin: 8vh;
+  margin: 3vh;
   }
 
   .replay-button:hover {
@@ -256,7 +256,7 @@
   color: #fff;
   background-color: #32323232;
   border-radius: 50%;
-  line-height: 140px;
+  line-height: 150px;
   text-align: center;
   width: 150px;
   height: 150px;
@@ -264,7 +264,7 @@
   border: #121212;
   -webkit-box-shadow: 0 5px 0 #121212;
   box-shadow: 0 5px 0 #121212;
-  margin: 8vh;
+  margin: 5.5vh;
   }
 
   .menu-button:hover {
@@ -339,4 +339,11 @@
   .countdown {
   font-size: 10em;
   color: #fff;
+  }
+
+  .points {
+    font-size: 5vw;
+    padding: 10vh 6vw;
+    border: double 20px #9f781c;
+    background-color: #ede5c0;
   }
