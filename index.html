@@ -66,8 +66,17 @@
                 <div id="accuracyLate" class="accuracy-late"></div>
                 <div id="score" class="game-score"></div>
             </div>
-            <button id="replayBtn" class="replay-button">menu</button>
+            <siv class="buttons">
+                <button id="replayBtn" class="replay-button">menu</button>
+                <button id="rankBtn" class="replay-button">rank</button>
+            </div>
         </div>
+    </div>
+    <div id="rankPage" class="text-container hidden">
+        <div class="rankings">
+            <div id="ranking" class="points"></div>
+        </div>
+        <button id="returnBtn" class="replay-button">return</button>
     </div>
 
     <script>
@@ -146,8 +155,11 @@
     const startBtn         = document.getElementById('startBtn');
     const backBtn          = document.getElementById('backBtn');
     const detailsBtn       = document.getElementById('detailsBtn');
+    const rankBtn          = document.getElementById('rankBtn');
+    const returnBtn        = document.getElementById('returnBtn');
     const startPage        = document.getElementById('startPage');
     const detailsPage      = document.getElementById('detailsPage');
+    const rankPage         = document.getElementById('rankPage');
     const timeElement      = document.getElementById('time');
     const countdownElement = document.getElementById('countdown');
     const second           = document.getElementById('second');
@@ -162,10 +174,12 @@
     const WPM              = document.getElementById('WPM');
     const accuracyLate     = document.getElementById('accuracyLate');
     const score            = document.getElementById('score');
+    const ranking          = document.getElementById('ranking');
 
     let remainedTextWords = remained.textContent.split('');
     let enteredTextWords  = [];
     let sentences         = [];
+    let rank              = [];
     let currentKey;
     let currentText;
     let countdown;
@@ -217,6 +231,75 @@
         btnSound.play();
     }
 
+    // 配列データをlocalStorageに保存
+    function saveToLocalStorage(rank) {
+        let storedRank = localStorage.getItem('rank');
+    if (storedRank) {
+
+        // データが存在する場合は、JSON形式から配列に変換
+        storedRank = JSON.parse(storedRank);
+    } else {
+
+        // データが存在しない場合は、新しい配列を作成
+        storedRank = [];
+    }
+
+    // 新しいデータを既存の配列に追加
+    storedRank.push(rank);
+
+    // 更新された配列データをlocalStorageに保存
+    localStorage.setItem('rank', JSON.stringify(storedRank));
+}
+
+    // localStorageから配列データを取得
+    function loadFromLocalStorage() {
+        let storedRank = localStorage.getItem('rank');
+        if (storedRank) {
+            return JSON.parse(storedRank);
+        } else {
+            return [];
+        }
+    }
+
+    rank = loadFromLocalStorage();  // ページロード時にlocalStorageから配列データを取得
+
+    function addScore(scoreCount) {
+        
+        // 配列が空、または新しいスコアが配列の最小値より大きい場合
+        if (rank.length < 10000 || scoreCount > rank[rank.length - 1]) {
+
+            // スコアを適切な位置に挿入
+            let i = rank.length - 1;
+            while (i >= 0 && rank[i] < scoreCount) {
+                i--;
+            }
+            rank.splice(i + 1, 0, scoreCount);
+
+            // 配列の長さが1万を超えたら最小値（最後の要素）を削除
+            if (rank.length > 10000) {
+                rank.pop();
+            }
+        }
+    }
+
+    function findIndex(rank, scoreCount) {
+
+        // 配列を降順にソート
+        let sortedRank = [...rank].sort((a, b) => b - a);
+        // scoreCountが何番目に大きいかを見つける
+        let position = rank.indexOf(scoreCount);
+        if (position === -1) {
+            return "out side of rankings";
+        } else {
+            // 重複する要素を考慮に入れる
+            while (sortedRank[position] === sortedRank[position + 1]) {
+                position++;
+            }
+            return position + 1;
+        }
+    }
+
+
 
     //startボタンを押された時の処理
     startBtn.addEventListener('click', () => {
@@ -242,7 +325,7 @@
 
      
         //配列questionからランダムで10個配列sentencesに代入
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < 1; i++){
             let index = Math.floor(Math.random() * questions.length);
             sentences.push(questions[index]);
             questions.splice(index, 1);
@@ -312,12 +395,14 @@
                         accuracyLate.textContent = `accuracy : ${accuracy.toFixed(2)}%`; //正タイプ率の表示
                         WPM.textContent = `wpm : ${wpm.toFixed(2)}`; //wpmの表示
                         miss.textContent = `miss : ${missCount} `; //ミス数の表示
-                        scoreCount = wpm * accuracy ; //スコアの計算
-                        score.textContent = `score : ${Math.round(scoreCount)}`; //スコアの表示
-                    }else{
-                        playClear(); //サウンド再生
-                        setQuestion(); // 新しい問題文をセット
-                    }
+                        scoreCount = Math.round(wpm * accuracy); //スコアの計算
+                        score.textContent = `score : ${scoreCount}`; //スコアの表示
+                        addScore(scoreCount); //配列rankにscoreを保存
+                        saveToLocalStorage(rank);  // 配列データをlocalStorageに保存
+                        }else{
+                            playClear(); //サウンド再生
+                            setQuestion(); // 新しい問題文をセット
+                        }
                 }
             }else{
                 missCount = missCount + 1;
@@ -327,6 +412,24 @@
     }
     }, 1000);
     });
+
+
+    //rankボタンが押された時の処理
+    rankBtn.addEventListener('click', () => {
+        let result = findIndex(rank, scoreCount);
+        ranking.textContent = `${result} in 10,000`;
+        playBtn(); //サウンド再生
+        rankPage.classList.remove('hidden');
+        message.classList.add('hidden');
+    });
+
+    //returnボタンが押された時の処理
+    returnBtn.addEventListener('click', () => {
+        playBtn(); //サウンド再生
+        message.classList.remove('hidden');
+        rankPage.classList.add('hidden');
+    });
+
 
     //detailsボタンが押された時の処理
     detailsBtn.addEventListener('click', () => {
